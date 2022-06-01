@@ -13,6 +13,7 @@
   "dependencies": {
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
+    "immer": "^9.0.14",
     "mini-css-extract-plugin": "^2.6.0",
     "svelte": "^3.48.0",
     "svelte-loader": "^3.1.2",

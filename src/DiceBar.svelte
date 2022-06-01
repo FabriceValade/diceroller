@@ -1,4 +1,8 @@
 <script>
+    import { createEventDispatcher } from "svelte";
+
+    const dispatch = createEventDispatcher();
+
     let possibleDiceArray = [];
     possibleDiceArray.push({
         value: [1, 4],
@@ -25,19 +29,23 @@
         display: "1d20",
     });
 
-let handleDiceClick = (value)=>{
-    let customHandler = (e) => {
-
-    }
-    return customHandler
-}
-
+    let handleDiceClick = (value) => {
+        let customHandler = (e) => {
+            dispatch('diceClick', {
+			value: value
+		})
+        };
+        return customHandler;
+    };
 </script>
 
 <div class="bar">
     <div class="wrp">
         {#each possibleDiceArray as possibleDice}
-            <div class="possibleDice" on:click={handleDiceClick(possibleDice.value)}>
+            <div
+                class="possibleDice"
+                on:click={handleDiceClick(possibleDice.value)}
+            >
                 {possibleDice.display}
             </div>
         {/each}

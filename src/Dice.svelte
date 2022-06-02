@@ -1,10 +1,9 @@
 <script>
     import { getContext } from 'svelte';
 
-
     export let size = "100px"
     export let value = [1, 6];
-    export let rollValue = value[1];
+    export let rollValue =1 ;
 
     let displayName="n/a"
     $: {
@@ -14,20 +13,19 @@
             displayName= value[0]+"-"+value[1]
         }
     }
-    let rollTrigger = getContext('rollTrigger');
     let roller = () => roll(value[0], value[1]);
+
+    let rollTrigger = getContext('rollTrigger');
     rollTrigger.subscribe((value) =>{
         rollValue = roller();
     })
-
+    rollValue = roller();
 
     function roll(min, max) {
-        const range = max - min;
+        const range = max - min + 1;
         let rvalue = Math.floor(Math.random() * range);
         return min + rvalue;
     }
-    
-    rollValue = roller();
     function handleLeftClick(e) {
         rollValue = roller();
     }
@@ -51,5 +49,6 @@
     .display,
     .header {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        user-select: none; 
     }
 </style>

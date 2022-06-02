@@ -9,12 +9,17 @@
 	import { setContext } from "svelte";
 	let w = 1;
 	let h = 1;
-	let diceArray = [{ value: [1, 6], currentValue: 1 }];
+	let diceArray = [];
+
+	$: total = diceArray.reduce(
+		(previous, current) => previous + current.currentValue,
+		0
+	);
 	const maxSize = 100;
 	let size = "100px";
 	$: {
 		if (diceArray.length) {
-			size = calcSize(w,h,diceArray.length)-8+ "px";
+			size = calcSize(w, h, diceArray.length) - 8 + "px";
 		} else {
 			size = maxSize + "px";
 		}
@@ -26,11 +31,13 @@
 	function handleRerollClick(e) {
 		rollTrigger.update((n) => !n);
 	}
+	function handleReset(e) {
+		diceArray=[];
+	}
 	function addDice(e) {
-		console.log(e.detail.value);
-		diceArray = produce(diceArray, (draft) => {
-			draft.push({ value: e.detail.value });
-		});
+		diceArray = diceArray.concat([
+			{ value: e.detail.value, currentValue: 1 },
+		]);
 	}
 
 	function calcSize(x, y, n) {
@@ -68,55 +75,97 @@
 			ncols = ncols1;
 			cell_size = cell_size1;
 		}
-		return cell_size
+		return cell_size;
 	}
 </script>
 
 <div class="dicetray">
-	<div class="dicebox" bind:clientWidth={w} bind:clientHeight={h}>
-		{#each diceArray as dice}
-			<Dice value={dice.value} {size} />
-		{/each}
+	<div class="titlebar">Roll some dices</div>
+	<div class="dicebar">
+		<div class="dicebox" bind:clientWidth={w} bind:clientHeight={h}>
+			{#each diceArray as dice, index}
+				<Dice
+					value={dice.value}
+					{size}
+					bind:rollValue={dice.currentValue}
+				/>
+			{/each}
+		</div>
+		<div class="totalDisplay">
+			Total: {total}
+		</div>
 	</div>
 	<div class="lowerbar">
 		<div class="barwrapper">
 			<DiceBar on:diceClick={addDice} />
 		</div>
 		<button on:click={handleRerollClick}> reroll </button>
+		<button on:click={handleReset}> reset </button>
 	</div>
 </div>
 {size}
 
 <style>
-	.dicetray,
-	.lowerbar {
-		border: solid 2px black;
+	.dicebar,
+	.lowerbar,
+	.titlebar {
+		box-sizing: border-box;
+		border: solid 1px black;
 		border-radius: 5px;
-		
+		width: 100%;
+	}
+	.titlebar {
+		border-bottom-left-radius: 0px;
+		border-bottom-right-radius: 0px;
+		border-bottom: transparent;
+		font-size: large;
+		padding: 5px;
+	}
+	.lowerbar {
+		border-top-left-radius: 0px;
+		border-top-right-radius: 0px;
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		padding: 5px;
+	}
+	.dicebar {
+		border-radius: 0px;
+		border-bottom: transparent;
+		background-color: rgb(182, 216, 245);
+		height: 300px;
+		width: 100%;
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-content: center;
+		align-items: center;
 	}
 	.dicebox {
-		width: 100%;
-		height: 300px;
 		display: flex;
 		flex-wrap: wrap;
-		justify-content: space-evenly;
+		justify-content: center;
 		align-content: center;
-		border: solid 2px black;
-		border-radius: 5px;
+		width: 90%;
+		height: 95%;
+		vertical-align: middle;
+	}
+	.totalDisplay {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		background-color: rgba(255, 255, 255, 0.452);
+		padding:10px;
+		margin:5px
 	}
 	.dicetray {
 		display: inline-block;
 		flex-direction: column;
-		width: auto;
+		width: 100%;
 		height: auto;
 	}
 
 	.barwrapper {
 		height: 75px;
-	}
-	.lowerbar {
-		display: flex;
-		margin:5px;
-		width: 100%
 	}
 </style>

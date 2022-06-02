@@ -1,7 +1,7 @@
 <script>
     import { getContext } from "svelte";
     import { onMount } from "svelte";
-    import { createScene } from "./scene";
+    import { setupScene } from "./scene";
 
     export let size = "100px";
     export let value = [1, 6];
@@ -9,7 +9,7 @@
 
     let el;
     onMount(() => {
-        createScene(el);
+        setupScene(el);
     });
     let displayName = "n/a";
     $: {
@@ -37,8 +37,7 @@
     }
 </script>
 
-<div class="rollingbox" on:click={handleLeftClick} style="--size:{size}">
-    <canvas bind:this={el} />
+<div class="rollingbox" on:click={handleLeftClick} style="--size:{size}" bind:this={el}>
     <div class="header">{displayName}</div>
     <div class="display">
         {rollValue}

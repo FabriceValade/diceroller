@@ -4,9 +4,14 @@
 	import Dice from "./Dice.svelte";
 	import DiceBar from "./DiceBar.svelte";
 	import { writable } from "svelte/store";
-	import produce from "immer";
-
+	import { init } from "./scene";
+	import { onMount } from "svelte";
 	import { setContext } from "svelte";
+
+	let el;
+    onMount(() => {
+        init(el);
+    });
 	let w = 1;
 	let h = 1;
 	let diceArray = [];
@@ -32,7 +37,7 @@
 		rollTrigger.update((n) => !n);
 	}
 	function handleReset(e) {
-		diceArray=[];
+		diceArray = [];
 	}
 	function addDice(e) {
 		diceArray = diceArray.concat([
@@ -79,6 +84,7 @@
 	}
 </script>
 
+<canvas id="c" bind:this={el} />
 <div class="dicetray">
 	<div class="titlebar">Roll some dices</div>
 	<div class="dicebar">
@@ -106,6 +112,15 @@
 {size}
 
 <style>
+	#c {
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+		display: block;
+		z-index: -1;
+	}
 	.dicebar,
 	.lowerbar,
 	.titlebar {
@@ -132,7 +147,7 @@
 	.dicebar {
 		border-radius: 0px;
 		border-bottom: transparent;
-		background-color: rgb(182, 216, 245);
+		background-color: rgba(182, 216, 245, 0.082);
 		height: 300px;
 		width: 100%;
 		position: relative;
@@ -155,8 +170,8 @@
 		bottom: 0;
 		right: 0;
 		background-color: rgba(255, 255, 255, 0.452);
-		padding:10px;
-		margin:5px
+		padding: 10px;
+		margin: 5px;
 	}
 	.dicetray {
 		display: inline-block;

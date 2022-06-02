@@ -40,8 +40,12 @@ export function setupScene(element) {
     sceneInfo.mesh = mesh;
     sceneInfos.push(sceneInfo);
     requestAnimationFrame(render);
+    return sceneInfos.length-1
 }
-
+export function clearScene(element) {
+    sceneInfos= sceneInfos.filter(sceneInfo => sceneInfo.elem !== element)
+    console.log(sceneInfos)
+}
 function rendererSceneInfo(sceneInfo) {
     const { scene, camera, elem } = sceneInfo;
 

@@ -1,15 +1,18 @@
 <script>
     import { getContext } from "svelte";
     import { onMount } from "svelte";
-    import { setupScene } from "./scene";
+    import { setupScene, clearScene } from "./scene";
 
     export let size = "100px";
     export let value = [1, 6];
     export let rollValue = 1;
 
     let el;
+    
     onMount(() => {
         setupScene(el);
+        return () => {clearScene(el); console.log("dismount called")}
+
     });
     let displayName = "n/a";
     $: {

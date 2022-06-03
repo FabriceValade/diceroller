@@ -38,6 +38,15 @@ export function setupScene(element) {
     const mesh = new THREE.Mesh(geometry, material);
     sceneInfo.scene.add(mesh);
     sceneInfo.mesh = mesh;
+    let speedX = Math.random()/10
+    let speedY = Math.random()/10
+    sceneInfo.update = (sceneInfo) => {
+        sceneInfo.mesh.rotation.x = sceneInfo.mesh.rotation.x+speedX
+        sceneInfo.mesh.rotation.y = sceneInfo.mesh.rotation.y+speedY
+    }
+
+
+
     sceneInfos.push(sceneInfo);
     requestAnimationFrame(render);
     return sceneInfos.length-1
@@ -94,7 +103,7 @@ function render(time) {
     renderer.setScissorTest(true);
 
     sceneInfos.forEach((sceneInfo)=>{
-        sceneInfo.mesh.rotation.y = time * .1;
+        sceneInfo.update(sceneInfo);
         rendererSceneInfo(sceneInfo);
     })
 

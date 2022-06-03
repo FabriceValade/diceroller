@@ -1,31 +1,35 @@
 <script>
     import { getContext } from "svelte";
     import { onMount } from "svelte";
-    import { setupScene, clearScene } from "./scene";
+    import { setupScene, clearScene, rollDice} from "./scene";
 
     export let size = "100px";
-    export let value = [1, 6];
+    export let value;
     export let rollValue = 1;
 
     let el;
-    
-    onMount(() => {
-        setupScene(el);
-        return () => {clearScene(el); console.log("dismount called")}
-
-    });
     let displayName = "n/a";
-    $: {
-        if (value[0] === 1) {
-            displayName = "d" + value[1];
-        } else {
-            displayName = value[0] + "-" + value[1];
-        }
+    let diceName = "d6"
+    if (value[0] === 1) {
+        displayName = "d" + value[1];
+        diceName=displayName
+    } else {
+        displayName = value[0] + "-" + value[1];
     }
+    onMount(() => {
+        setupScene(el,diceName);
+        return () => {
+            clearScene(el);
+            console.log("dismount called");
+        };
+    });
+    
+
     let roller = () => roll(value[0], value[1]);
 
     let rollTrigger = getContext("rollTrigger");
     rollTrigger.subscribe((value) => {
+        rollDice(el,diceName);
         rollValue = roller();
     });
     rollValue = roller();
@@ -40,7 +44,12 @@
     }
 </script>
 
-<div class="rollingbox" on:click={handleLeftClick} style="--size:{size}" bind:this={el}>
+<div
+    class="rollingbox"
+    on:click={handleLeftClick}
+    style="--size:{size}"
+    bind:this={el}
+>
     <div class="header">{displayName}</div>
     <div class="display">
         {rollValue}
